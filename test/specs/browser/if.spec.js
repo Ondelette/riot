@@ -176,4 +176,24 @@ describe('Riot if', function() {
     tag.unmount()
   })
 
+  it('undefined expressions conditions must be properly evaluated', function() {
+    injectHTML('<riot-tmp></riot-tmp>')
+    riot.tag('riot-tmp', `
+      <p if={hello.world}>hi</p>
+      <p if={!hello.world}>goodbye</p>
+    `, function() {
+    })
+    var tag = riot.mount('riot-tmp')[0]
+    expectHTML(tag).to.be.equal('<p>goodbye</p>')
+    tag.hello = true
+    tag.update()
+    expectHTML(tag).to.be.equal('<p>goodbye</p>')
+    tag.hello = {
+      world: true
+    }
+    tag.update()
+    expectHTML(tag).to.be.equal('<p>hi</p>')
+    tag.unmount()
+  })
+
 })
